@@ -2,7 +2,10 @@ import { parseQuantity, quantityToDecimal } from '../fractionParser';
 import { addQuantities, multiplyQuantity, formatQuantity, normalize } from '../fractionMath';
 import { convertQuantity, toBaseUnits } from '../unitConverter';
 
-describe('integration tests - real-world scenarios', () => {
+// TODO: FRACTIONS REMOVED FROM SCOPE
+// Decision: Replace fraction support with decimal-only (up to 2 decimal places)
+// This integration test suite will be updated when we implement decimal-only quantities
+describe.skip('integration tests - real-world scenarios', () => {
   describe('recipe scaling', () => {
     it('should scale a recipe by 1.5x', () => {
       // Recipe calls for 2 cups flour

@@ -1,6 +1,9 @@
 import { parseQuantity, quantityToDecimal } from '../fractionParser';
 
-describe('fractionParser', () => {
+// TODO: FRACTIONS REMOVED FROM SCOPE
+// Decision: Replace fraction support with decimal-only (up to 2 decimal places)
+// This test suite will be removed when we implement decimal-only quantities
+describe.skip('fractionParser', () => {
   describe('parseQuantity', () => {
     it('should parse simple integers', () => {
       expect(parseQuantity('2')).toEqual({ whole: 2, num: 0, denom: 1 });
