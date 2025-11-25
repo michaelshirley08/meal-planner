@@ -5,6 +5,7 @@ import { verifyToken } from '../services/authService.js';
  * Extend Express Request to include userId
  */
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
       userId?: number;
@@ -39,18 +40,23 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction):
  * Error handler middleware
  */
 export function errorHandler(
-  err: any,
+  err: unknown,
   req: Request,
-  res: Response,
-  next: NextFunction
+  res: Response
 ): void {
   console.error(err);
 
+  if (!(err instanceof Error)) {
+    res.status(500).json({ error: 'Internal server error' });
+    return;
+  }
+
   // Check if error already has a status code (e.g., from body-parser)
-  if (err.status || err.statusCode) {
-    const statusCode = err.status || err.statusCode;
+  const errWithStatus = err as Error & { status?: number; statusCode?: number };
+  if (errWithStatus.status || errWithStatus.statusCode) {
+    const statusCode = errWithStatus.status || errWithStatus.statusCode;
     res.status(statusCode).json({
-      error: err.message || 'Bad request'
+      error: err.message || 'Bad request',
     });
     return;
   }

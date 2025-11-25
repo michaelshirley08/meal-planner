@@ -1,8 +1,8 @@
 import { prisma } from '../db/client.js';
 import { Quantity } from '../utils/types.js';
 import { addQuantities, multiplyQuantity } from '../utils/fractionMath.js';
-import { dbToQuantity, quantityToDb } from '../utils/quantityUtils.js';
-import { getMeasurementType, toBaseUnits, fromBaseUnits } from '../utils/unitConverter.js';
+import { dbToQuantity } from '../utils/quantityUtils.js';
+import { getMeasurementType, toBaseUnits } from '../utils/unitConverter.js';
 
 export interface AggregatedIngredient {
   ingredientId: number;
@@ -106,7 +106,9 @@ export async function generateShoppingList(
           quantity: scaledQuantity,
           unit: recipeIng.unit,
           baseValue: 0,
-          baseUnit: getMeasurementType(recipeIng.unit as any) === 'volume' ? 'ml' : 'g',
+          baseUnit: getMeasurementType(recipeIng.unit as unknown as string) === 'volume'
+            ? 'ml'
+            : 'g',
           prepNotes: recipeIng.prepNotes ? [recipeIng.prepNotes] : [],
           recipeReferences: []
         };
@@ -118,8 +120,8 @@ export async function generateShoppingList(
           agg.quantity = addQuantities(agg.quantity, scaledQuantity);
         } else {
           // Convert both to base units and add
-          const base1 = toBaseUnits(agg.quantity, agg.unit as any);
-          const base2 = toBaseUnits(scaledQuantity, recipeIng.unit as any);
+          const base1 = toBaseUnits(agg.quantity, agg.unit as unknown as string);
+          const base2 = toBaseUnits(scaledQuantity, recipeIng.unit as unknown as string);
           agg.baseValue = base1.value + base2.value;
           agg.baseUnit = base1.unit as 'ml' | 'g';
           // Keep the first unit for display, but track base value
@@ -146,7 +148,7 @@ export async function generateShoppingList(
   const ingredients = Array.from(ingredientMap.values()).map((agg) => {
     // If not already set (same units), calculate base value
     if (agg.baseValue === 0) {
-      const base = toBaseUnits(agg.quantity, agg.unit as any);
+      const base = toBaseUnits(agg.quantity, agg.unit as unknown as string);
       agg.baseValue = base.value;
       agg.baseUnit = base.unit as 'ml' | 'g';
     }

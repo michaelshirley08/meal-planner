@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { registerUser, expectErrorMessage } from '../helpers/testHelpers';
+import { registerUser } from '../helpers/testHelpers';
 import { generateUniqueTestUser } from '../fixtures/testUsers';
 
 /**

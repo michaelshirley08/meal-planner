@@ -1,6 +1,6 @@
 import { parseQuantity, quantityToDecimal } from '../fractionParser.js';
 import { addQuantities, multiplyQuantity, formatQuantity, normalize } from '../fractionMath.js';
-import { convertQuantity, toBaseUnits, fromBaseUnits } from '../unitConverter.js';
+import { convertQuantity, toBaseUnits } from '../unitConverter.js';
 
 describe('integration tests - real-world scenarios', () => {
   describe('recipe scaling', () => {

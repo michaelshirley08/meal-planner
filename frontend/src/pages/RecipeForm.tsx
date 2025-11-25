@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { recipeService } from '../services/recipeService';
 import { ingredientService } from '../services/ingredientService';
@@ -42,13 +42,22 @@ export function RecipeForm() {
     }
   }, [id, isEditing]);
 
+  const searchIngredients = useCallback(async () => {
+    try {
+      const results = await ingredientService.searchIngredients(ingredientSearch);
+      setSearchResults(results);
+    } catch (error) {
+      console.error('Failed to search ingredients:', error);
+    }
+  }, [ingredientSearch]);
+
   useEffect(() => {
     if (ingredientSearch.length >= 2) {
       searchIngredients();
     } else {
       setSearchResults([]);
     }
-  }, [ingredientSearch]);
+  }, [ingredientSearch, searchIngredients]);
 
   const loadRecipe = async (recipeId: number) => {
     try {
@@ -84,15 +93,6 @@ export function RecipeForm() {
     }
   };
 
-  const searchIngredients = async () => {
-    try {
-      const results = await ingredientService.searchIngredients(ingredientSearch);
-      setSearchResults(results);
-    } catch (error) {
-      console.error('Failed to search ingredients:', error);
-    }
-  };
-
   const addIngredient = (ingredient: Ingredient) => {
     setIngredients([
       ...ingredients,
@@ -109,7 +109,11 @@ export function RecipeForm() {
     setSearchResults([]);
   };
 
-  const updateIngredient = (index: number, field: keyof RecipeIngredientInput, value: any) => {
+  const updateIngredient = (
+    index: number,
+    field: keyof RecipeIngredientInput,
+    value: string | number
+  ) => {
     const updated = [...ingredients];
     updated[index] = { ...updated[index], [field]: value };
     setIngredients(updated);
@@ -140,7 +144,7 @@ export function RecipeForm() {
     setSubmitting(true);
 
     try {
-      const recipeData: any = {
+      const recipeData = {
         name,
         description: description || undefined,
         cuisineType: cuisineType || undefined,
@@ -168,9 +172,10 @@ export function RecipeForm() {
       }
 
       navigate('/recipes');
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to save recipe';
       console.error('Failed to save recipe:', error);
-      alert(error.response?.data?.message || 'Failed to save recipe');
+      alert(errorMessage);
     } finally {
       setSubmitting(false);
     }

@@ -1,7 +1,6 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import { Router, Request, Response } from 'express';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import * as mealPlanService from '../services/mealPlanService.js';
-import * as shoppingListService from '../services/shoppingListService.js';
 
 const router = Router();
 

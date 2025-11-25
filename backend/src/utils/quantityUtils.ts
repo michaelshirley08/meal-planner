@@ -1,5 +1,6 @@
 import { Quantity } from './types.js';
 import { formatQuantity as formatQty } from './fractionMath.js';
+import { parseQuantity } from './fractionParser.js';
 
 /**
  * Utility to convert database quantity fields to Quantity object
@@ -43,6 +44,5 @@ export function formatQuantityDisplay(quantity: Quantity): string {
  * Parse quantity from API request (can be "2", "1/2", "1 1/2", "1.5")
  */
 export function parseQuantityFromAPI(input: string): Quantity {
-  const { parseQuantity } = require('./fractionParser.js');
   return parseQuantity(input);
 }

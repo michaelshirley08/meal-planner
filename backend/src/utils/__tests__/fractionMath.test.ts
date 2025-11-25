@@ -5,9 +5,8 @@ import {
   multiplyQuantity,
   divideQuantity,
   compareQuantities,
-  formatQuantity
+  formatQuantity,
 } from '../fractionMath.js';
-import { Quantity } from '../types.js';
 
 describe('fractionMath', () => {
   describe('normalize', () => {

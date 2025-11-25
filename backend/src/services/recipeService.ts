@@ -238,7 +238,7 @@ export async function updateRecipe(userId: number, recipeId: number, input: Part
   }
 
   // Update basic fields
-  const updated = await prisma.recipe.update({
+  await prisma.recipe.update({
     where: { id: recipeId },
     data: {
       name: input.name,
@@ -247,8 +247,8 @@ export async function updateRecipe(userId: number, recipeId: number, input: Part
       prepMinutes: input.prepMinutes,
       cookMinutes: input.cookMinutes,
       defaultServings: input.defaultServings,
-      photoUrl: input.photoUrl
-    }
+      photoUrl: input.photoUrl,
+    },
   });
 
   // Update ingredients if provided
