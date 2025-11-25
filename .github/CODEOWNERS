@@ -1,0 +1,33 @@
+# Code Owners - Automated Review Assignments
+#
+# These owners will be automatically requested for review when someone opens a pull request
+# that modifies files matching the patterns below.
+#
+# Learn more: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Database Schema - Requires Data Engineer approval
+backend/prisma/schema.prisma @data-engineer
+backend/prisma/migrations/ @data-engineer
+
+# CI/CD Configuration - Requires Tech Lead approval
+.github/workflows/ @tech-lead
+
+# Documentation - Tech Lead reviews for technical accuracy
+docs/ @tech-lead
+*.md @tech-lead
+
+# Agent Instructions - All agents should review changes to their own files
+.claude/agents/tech-lead.md @tech-lead
+.claude/agents/junior-engineer.md @junior-engineer
+.claude/agents/data-engineer.md @data-engineer
+.claude/agents/ux-designer.md @ux-designer
+
+# Frontend Components - UX Designer reviews user-facing changes
+frontend/src/components/ @ux-designer
+frontend/src/pages/ @ux-designer
+
+# API Routes - Tech Lead reviews for architecture
+backend/src/routes/ @tech-lead
+
+# Default - Tech Lead reviews everything not explicitly assigned
+* @tech-lead
