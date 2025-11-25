@@ -26,7 +26,7 @@ describe('unitConverter', () => {
     });
 
     it('should throw on unknown unit', () => {
-      expect(() => getMeasurementType('invalid' as any)).toThrow('Unknown unit');
+      expect(() => getMeasurementType('invalid' as unknown as import('../unitConverter').Unit)).toThrow('Unknown unit');
     });
   });
 
