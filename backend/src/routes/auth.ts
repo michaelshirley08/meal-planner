@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { registerUser, loginUser } from '../services/authService.js';
-import { authMiddleware } from '../middleware/authMiddleware.js';
-import { prisma } from '../db/client.js';
+import { registerUser, loginUser } from '../services/authService';
+import { authMiddleware } from '../middleware/authMiddleware';
+import { prisma } from '../db/client';
 
 const router = Router();
 

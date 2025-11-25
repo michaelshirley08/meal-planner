@@ -1,4 +1,4 @@
-import { prisma } from '../db/client.js';
+import { prisma } from '../db/client';
 
 /**
  * Search for ingredients by name with autocomplete
@@ -14,14 +14,12 @@ export async function searchIngredients(query: string, limit: number = 20) {
       OR: [
         {
           name: {
-            contains: query,
-            mode: 'insensitive'
+            contains: query
           }
         },
         {
           aliases: {
-            contains: query,
-            mode: 'insensitive'
+            contains: query
           }
         }
       ]

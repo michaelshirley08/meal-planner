@@ -1,5 +1,7 @@
-import { Quantity, VolumeUnit, MassUnit, Unit } from './types.js';
-import { multiplyQuantity, normalize } from './fractionMath.js';
+import { Quantity, VolumeUnit, MassUnit, Unit } from './types';
+
+// Re-export types for convenience
+export type { Unit, VolumeUnit, MassUnit } from './types';
 
 /**
  * Convert volume units to milliliters
@@ -54,7 +56,7 @@ export function getMassUnits(): MassUnit[] {
 
 /**
  * Convert a quantity from one unit to another (within the same measurement type)
- * E.g., 2 cups to ml: convertQuantity({ whole: 2, num: 0, denom: 1 }, 'cup', 'ml') -> { whole: 473, num: 176, denom: 1000 }
+ * E.g., 2 cups to ml: convertQuantity(2, 'cup', 'ml') -> 473.18
  *
  * @throws Error if units are of different measurement types
  */
@@ -76,12 +78,15 @@ export function convertQuantity(
     return quantity;
   }
 
-  // Get conversion factors
+  // Get conversion factor
   const conversionFactor = fromType === 'volume'
     ? VOLUME_TO_ML[fromUnit as VolumeUnit] / VOLUME_TO_ML[toUnit as VolumeUnit]
     : MASS_TO_G[fromUnit as MassUnit] / MASS_TO_G[toUnit as MassUnit];
 
-  return multiplyQuantity(quantity, conversionFactor);
+  const result = quantity * conversionFactor;
+
+  // Round to 2 decimal places
+  return Math.round(result * 100) / 100;
 }
 
 /**
@@ -92,12 +97,12 @@ export function toBaseUnits(quantity: Quantity, unit: Unit): { value: number; un
 
   if (type === 'volume') {
     const factor = VOLUME_TO_ML[unit as VolumeUnit];
-    const total = (quantity.whole * quantity.denom + quantity.num) / quantity.denom * factor;
-    return { value: total, unit: 'ml' };
+    const value = quantity * factor;
+    return { value: Math.round(value * 100) / 100, unit: 'ml' };
   } else {
     const factor = MASS_TO_G[unit as MassUnit];
-    const total = (quantity.whole * quantity.denom + quantity.num) / quantity.denom * factor;
-    return { value: total, unit: 'g' };
+    const value = quantity * factor;
+    return { value: Math.round(value * 100) / 100, unit: 'g' };
   }
 }
 
@@ -125,54 +130,8 @@ export function fromBaseUnits(
 
   const result = baseValue * conversionFactor;
 
-  // Convert decimal to quantity
-  return decimalToQuantity(result);
-}
-
-/**
- * Convert a decimal number to a Quantity with practical rounding
- */
-function decimalToQuantity(value: number): Quantity {
-  const whole = Math.floor(value);
-  const decimal = value - whole;
-
-  // Common practical fractions for cooking
-  // Rounded to nearest 1/16th for precision
-  const commonFractions: Array<[number, number, number]> = [
-    [1, 16, 0.0625],
-    [1, 8, 0.125],
-    [3, 16, 0.1875],
-    [1, 4, 0.25],
-    [5, 16, 0.3125],
-    [3, 8, 0.375],
-    [7, 16, 0.4375],
-    [1, 2, 0.5],
-    [9, 16, 0.5625],
-    [5, 8, 0.625],
-    [11, 16, 0.6875],
-    [3, 4, 0.75],
-    [13, 16, 0.8125],
-    [7, 8, 0.875],
-    [15, 16, 0.9375]
-  ];
-
-  // Find closest fraction
-  let bestFraction: [number, number, number] = [0, 1, 0];
-  let bestDiff = 1;
-
-  for (const frac of commonFractions) {
-    const diff = Math.abs(decimal - frac[2]);
-    if (diff < bestDiff) {
-      bestDiff = diff;
-      bestFraction = frac;
-    }
-  }
-
-  return {
-    whole,
-    num: bestFraction[0],
-    denom: bestFraction[1]
-  };
+  // Round to 2 decimal places
+  return Math.round(result * 100) / 100;
 }
 
 /**
@@ -183,11 +142,11 @@ export function formatQuantityWithUnit(
   unit: Unit,
   options: {
     style?: 'short' | 'long'; // 'cup' vs 'cups'
-    format?: 'fraction' | 'decimal';
+    decimalPlaces?: number;
   } = {}
 ): string {
-  const { formatQuantity } = require('./fractionMath.js');
-  const qStr = formatQuantity(quantity, options.format);
+  const places = options.decimalPlaces ?? 2;
+  const qStr = quantity.toFixed(places).replace(/\.?0+$/, '');
 
   const unitStr = options.style === 'long'
     ? pluralizeUnit(unit, quantity)
@@ -200,8 +159,7 @@ export function formatQuantityWithUnit(
  * Pluralize a unit if needed
  */
 function pluralizeUnit(unit: Unit, quantity: Quantity): string {
-  const total = quantity.whole + quantity.num / quantity.denom;
-  const plural = Math.abs(total) !== 1;
+  const plural = Math.abs(quantity) !== 1;
 
   const pluralMap: Record<Unit, string> = {
     'ml': plural ? 'ml' : 'ml',

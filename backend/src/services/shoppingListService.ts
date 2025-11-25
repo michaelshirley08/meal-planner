@@ -1,8 +1,7 @@
-import { prisma } from '../db/client.js';
-import { Quantity } from '../utils/types.js';
-import { addQuantities, multiplyQuantity } from '../utils/fractionMath.js';
-import { dbToQuantity, quantityToDb } from '../utils/quantityUtils.js';
-import { getMeasurementType, toBaseUnits, fromBaseUnits } from '../utils/unitConverter.js';
+import { prisma } from '../db/client';
+import { Quantity, Unit } from '../utils/types';
+import { addQuantities, multiplyQuantity, dbToQuantity } from '../utils/quantityUtils';
+import { getMeasurementType, toBaseUnits } from '../utils/unitConverter';
 
 export interface AggregatedIngredient {
   ingredientId: number;
@@ -99,15 +98,18 @@ export async function generateShoppingList(
       let agg = ingredientMap.get(ingredientId);
 
       if (!agg) {
+        const unitStr = recipeIng.unit as Unit;
         agg = {
           ingredientId,
           ingredientName: ingredient.name,
           category: ingredient.category?.name,
           quantity: scaledQuantity,
-          unit: recipeIng.unit,
+          unit: unitStr,
           baseValue: 0,
-          baseUnit: getMeasurementType(recipeIng.unit as any) === 'volume' ? 'ml' : 'g',
-          prepNotes: recipeIng.prepNotes ? [recipeIng.prepNotes] : [],
+          baseUnit: getMeasurementType(unitStr) === 'volume'
+            ? 'ml'
+            : 'g',
+          prepNotes: recipeIng.prepNotes ? [recipeIng.prepNotes] : undefined,
           recipeReferences: []
         };
         ingredientMap.set(ingredientId, agg);
@@ -118,8 +120,10 @@ export async function generateShoppingList(
           agg.quantity = addQuantities(agg.quantity, scaledQuantity);
         } else {
           // Convert both to base units and add
-          const base1 = toBaseUnits(agg.quantity, agg.unit as any);
-          const base2 = toBaseUnits(scaledQuantity, recipeIng.unit as any);
+          const aggUnitStr = agg.unit as Unit;
+          const recipeUnitStr = recipeIng.unit as Unit;
+          const base1 = toBaseUnits(agg.quantity, aggUnitStr);
+          const base2 = toBaseUnits(scaledQuantity, recipeUnitStr);
           agg.baseValue = base1.value + base2.value;
           agg.baseUnit = base1.unit as 'ml' | 'g';
           // Keep the first unit for display, but track base value
@@ -127,8 +131,12 @@ export async function generateShoppingList(
         }
 
         // Track preparation notes
-        if (recipeIng.prepNotes && !agg.prepNotes.includes(recipeIng.prepNotes)) {
-          agg.prepNotes.push(recipeIng.prepNotes);
+        if (recipeIng.prepNotes && agg.prepNotes) {
+          if (!agg.prepNotes.includes(recipeIng.prepNotes)) {
+            agg.prepNotes.push(recipeIng.prepNotes);
+          }
+        } else if (recipeIng.prepNotes) {
+          agg.prepNotes = [recipeIng.prepNotes];
         }
       }
 
@@ -137,7 +145,7 @@ export async function generateShoppingList(
         recipeName: recipe.name,
         quantity: scaledQuantity,
         unit: recipeIng.unit,
-        prepNotes: recipeIng.prepNotes
+        prepNotes: recipeIng.prepNotes || undefined
       });
     }
   }
@@ -146,7 +154,8 @@ export async function generateShoppingList(
   const ingredients = Array.from(ingredientMap.values()).map((agg) => {
     // If not already set (same units), calculate base value
     if (agg.baseValue === 0) {
-      const base = toBaseUnits(agg.quantity, agg.unit as any);
+      const unitStr = agg.unit as Unit;
+      const base = toBaseUnits(agg.quantity, unitStr);
       agg.baseValue = base.value;
       agg.baseUnit = base.unit as 'ml' | 'g';
     }

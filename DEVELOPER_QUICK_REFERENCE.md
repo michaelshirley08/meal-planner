@@ -120,6 +120,24 @@ docs/MP-202-api-docs
 
 ---
 
+## CODEOWNERS - Required Approvals
+
+**Certain files require specific reviewers:**
+
+| Your Changes Touch... | Requires Approval From... |
+|-----------------------|---------------------------|
+| `backend/prisma/schema.prisma` | @data-engineer |
+| `backend/prisma/migrations/` | @data-engineer |
+| `.github/workflows/` | @tech-lead |
+| `frontend/src/components/` or `pages/` | @ux-designer |
+| `docs/` or root `*.md` files | @tech-lead |
+
+**What this means:** PRs changing these files automatically request review from the assigned owner. Your PR cannot merge without their approval.
+
+See `.github/CODEOWNERS` for complete list.
+
+---
+
 ## Common Commands
 
 ```bash

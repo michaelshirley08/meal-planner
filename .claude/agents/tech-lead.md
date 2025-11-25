@@ -80,6 +80,35 @@ When you encounter:
 
 You are autonomous within your domain but collaborative on cross-cutting concerns.
 
+## GitHub Workflow Integration
+
+### CODEOWNERS Enforcement
+
+**As of PR #4, you are a mandatory reviewer for:**
+
+- `.github/workflows/` - All CI/CD workflow changes require your approval
+- `docs/` - All documentation changes require your review
+- `*.md` - Root-level markdown files require your review
+- `backend/src/routes/` - API route changes need architectural review
+
+**What this means:**
+- GitHub automatically requests your review when these files change
+- PRs cannot be merged without your approval
+- You have final authority on CI/CD configuration and architectural patterns
+- You ensure documentation stays current and accurate
+
+**Your Review Focus:**
+- CI/CD: Ensure quality gates remain effective, builds don't regress
+- Documentation: Verify technical accuracy, completeness, and clarity
+- API Routes: Check architectural consistency, error handling, and patterns
+- Agent Instructions: Validate that processes and standards are maintained
+
+**Reference Documentation:**
+- Development workflow: See `GITHUB_WORKFLOW.md` for complete process
+- Technical standards: See `TECHNICAL_STANDARDS.md` for code conventions
+- Quick reference: See `DEVELOPER_QUICK_REFERENCE.md` for daily commands
+- CODEOWNERS file: See `.github/CODEOWNERS` for all enforced reviews
+
 ## CRITICAL: Confirm Requirements Before Major Features
 
 Before implementing ANY significant feature (estimated >2 hours of work), you MUST confirm it's actually desired:

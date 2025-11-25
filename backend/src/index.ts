@@ -6,14 +6,14 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Import routes
-import authRoutes from './routes/auth.js';
-import recipesRoutes from './routes/recipes.js';
-import ingredientsRoutes from './routes/ingredients.js';
-import mealPlansRoutes from './routes/mealPlans.js';
-import shoppingListsRoutes from './routes/shoppingLists.js';
+import authRoutes from './routes/auth';
+import recipesRoutes from './routes/recipes';
+import ingredientsRoutes from './routes/ingredients';
+import mealPlansRoutes from './routes/mealPlans';
+import shoppingListsRoutes from './routes/shoppingLists';
 
 // Import middleware
-import { errorHandler } from './middleware/authMiddleware.js';
+import { errorHandler } from './middleware/authMiddleware';
 
 // Create Express app
 const app = express();
@@ -54,7 +54,6 @@ if (process.env.NODE_ENV !== 'test') {
 export default app;
 
 // Export all utilities
-export * from './utils/types.js';
-export * from './utils/fractionParser.js';
-export * from './utils/fractionMath.js';
-export * from './utils/unitConverter.js';
+export * from './utils/types';
+export * from './utils/quantityUtils';
+export * from './utils/unitConverter';

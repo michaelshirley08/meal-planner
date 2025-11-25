@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Modal } from '../common/Modal';
 import { recipeService } from '../../services/recipeService';
 import { useDebounce } from '../../hooks/useDebounce';
@@ -26,25 +26,7 @@ export function AddMealModal({ isOpen, onClose, date, mealType, onSave }: AddMea
 
   const debouncedSearch = useDebounce(searchTerm, 300);
 
-  useEffect(() => {
-    if (isOpen) {
-      loadRecipes();
-    } else {
-      // Reset form when modal closes
-      setSearchTerm('');
-      setSelectedRecipe(null);
-      setServingOverride(undefined);
-      setNotes('');
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (debouncedSearch || isOpen) {
-      loadRecipes();
-    }
-  }, [debouncedSearch]);
-
-  const loadRecipes = async () => {
+  const loadRecipes = useCallback(async () => {
     try {
       setLoading(true);
       const data = await recipeService.getRecipes({
@@ -57,7 +39,25 @@ export function AddMealModal({ isOpen, onClose, date, mealType, onSave }: AddMea
     } finally {
       setLoading(false);
     }
-  };
+  }, [debouncedSearch]);
+
+  useEffect(() => {
+    if (isOpen) {
+      loadRecipes();
+    } else {
+      // Reset form when modal closes
+      setSearchTerm('');
+      setSelectedRecipe(null);
+      setServingOverride(undefined);
+      setNotes('');
+    }
+  }, [isOpen, loadRecipes]);
+
+  useEffect(() => {
+    if (debouncedSearch || isOpen) {
+      loadRecipes();
+    }
+  }, [debouncedSearch, isOpen, loadRecipes]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

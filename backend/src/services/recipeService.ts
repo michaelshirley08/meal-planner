@@ -1,6 +1,6 @@
-import { prisma } from '../db/client.js';
-import { quantityToDb, dbToQuantity } from '../utils/quantityUtils.js';
-import { Quantity } from '../utils/types.js';
+import { prisma } from '../db/client';
+import { quantityToDb, dbToQuantity } from '../utils/quantityUtils';
+import { Quantity } from '../utils/types';
 
 export interface RecipeIngredientInput {
   ingredientId: number;
@@ -138,14 +138,12 @@ export async function searchRecipes(userId: number, query: string, limit: number
       OR: [
         {
           name: {
-            contains: query,
-            mode: 'insensitive'
+            contains: query
           }
         },
         {
           description: {
-            contains: query,
-            mode: 'insensitive'
+            contains: query
           }
         }
       ]
@@ -238,7 +236,7 @@ export async function updateRecipe(userId: number, recipeId: number, input: Part
   }
 
   // Update basic fields
-  const updated = await prisma.recipe.update({
+  await prisma.recipe.update({
     where: { id: recipeId },
     data: {
       name: input.name,
@@ -247,8 +245,8 @@ export async function updateRecipe(userId: number, recipeId: number, input: Part
       prepMinutes: input.prepMinutes,
       cookMinutes: input.cookMinutes,
       defaultServings: input.defaultServings,
-      photoUrl: input.photoUrl
-    }
+      photoUrl: input.photoUrl,
+    },
   });
 
   // Update ingredients if provided

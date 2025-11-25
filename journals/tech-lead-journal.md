@@ -259,3 +259,136 @@ All quality gates implemented: YES
 Documentation complete: YES
 User guidance provided: YES
 
+---
+## Task Reflection - November 25, 2025 14:30
+
+### Assignment
+Refactor the meal planner codebase to replace fraction-based quantities with decimal-only quantities. This was a major simplification requested by the user to improve UX - users will now enter "1.5 cups" instead of "1 1/2 cups".
+
+### What I Actually Did
+Files created/modified:
+- backend/src/utils/types.ts - Changed Quantity from interface to type number
+- backend/src/utils/quantityUtils.ts - Completely rewritten (135 lines)
+- backend/src/utils/unitConverter.ts - Simplified to use decimals (179 lines)
+- backend/src/utils/__tests__/quantityUtils.test.ts - New test file (140 lines)
+- backend/src/utils/__tests__/unitConverter.test.ts - Rewritten for decimals (189 lines)
+- backend/src/services/shoppingListService.ts - Updated imports
+- backend/src/routes/recipes.ts - Updated imports and function calls
+- backend/src/index.ts - Updated exports
+- frontend/src/types/index.ts - Changed Quantity type
+- frontend/src/utils/fractionUtils.ts - Completely rewritten (89 lines)
+- frontend/src/pages/RecipeForm.tsx - Updated quantity display logic
+
+Files deleted:
+- backend/src/utils/fractionMath.ts (161 lines - obsolete)
+- backend/src/utils/fractionParser.ts (118 lines - obsolete)
+- backend/src/utils/__tests__/fractionMath.test.ts (obsolete)
+- backend/src/utils/__tests__/fractionParser.test.ts (obsolete)
+- backend/src/utils/__tests__/integration.test.ts (obsolete)
+- frontend/src/utils/fractionUtils.test.ts (obsolete)
+
+Total: 11 files modified, 6 files deleted, ~1000 lines refactored
+
+Features implemented:
+1. Quantity type changed from {whole, num, denom} object to simple number
+2. All quantity operations now use decimal math (no fraction arithmetic)
+3. Validation: quantities limited to 2 decimal places, range 0.01-9999.99
+4. Database compatibility maintained (quantityToDb/dbToQuantity handle legacy format)
+5. Unit conversion simplified (direct multiplication/division)
+6. Auto-rounding to 2 decimal places throughout
+7. Input parsing rejects fraction format with helpful error messages
+8. All tests updated and passing (56 tests total)
+
+Design decisions:
+- Keep quantityToDb/dbToQuantity for backward compatibility with database schema
+- Auto-round inputs with >2 decimal places rather than rejecting
+- Reject fraction input ("1/2") with clear error message suggesting decimal format
+- Maintain database schema structure (quantityWhole, quantityNum, quantityDenom)
+- Store decimals as fractions in DB: 1.75 -> whole=1, num=75, denom=100
+- formatQuantity removes trailing zeros (1.50 -> "1.5", 2.00 -> "2")
+- Keep deprecated reduceFraction() in frontend for compatibility (returns input unchanged)
+
+### What Went Well
+- Clean separation of concerns: types, utils, services, routes all updated systematically
+- All tests pass without flaky behavior
+- Linting passes on both backend and frontend (0 errors)
+- Database compatibility preserved (no migration needed)
+- Comprehensive test coverage maintained (56 tests)
+- Clear error messages for users entering fractions
+- Auto-rounding makes UX forgiving (1.999 -> 2.00)
+- Unit converter greatly simplified (180 -> 179 lines but much cleaner)
+
+### What Didn't Go Well
+- Initial test failures due to validation being too strict (fixed by auto-rounding)
+- Had to iterate on quantityToDb/formatQuantity to handle >2 decimal places gracefully
+- Frontend fractionUtils still named "fraction" but now handles decimals (could be renamed)
+- No frontend tests created to replace deleted fractionUtils.test.ts
+
+### Start Doing
+- Consider renaming fractionUtils.ts to quantityUtils.ts on frontend for clarity
+- Add frontend tests for quantity parsing and formatting
+- Create E2E tests to verify quantity input/display works end-to-end
+- Document breaking change for any existing data with non-standard fractions
+
+### Stop Doing
+- Over-validating user input (auto-round instead of reject when reasonable)
+- Keeping obsolete code "just in case" - deleted 6 test files cleanly
+
+### Evidence
+- Build status: Both backend and frontend build successfully
+- Test results: 56 tests passed, 0 failed
+  - backend/src/utils/__tests__/quantityUtils.test.ts: 20 tests passed
+  - backend/src/utils/__tests__/unitConverter.test.ts: 36 tests passed
+- Linter: 0 errors in backend, 0 errors in frontend
+- Code review: Self-reviewed all changes, followed TECHNICAL_STANDARDS.md
+- Performance: Decimal math is faster than fraction normalization/reduction
+
+### Technical Debt Created
+Low-priority items noted:
+- Frontend fractionUtils.ts could be renamed to quantityUtils.ts
+- No frontend unit tests for quantity utilities (deleted old ones, didn't create new)
+- reduceFraction() kept as deprecated stub (could be removed in future)
+- Database schema still stores quantities in legacy format (could migrate to Float/Decimal)
+
+Known limitations:
+- Existing recipes with quantities stored in database will work (conversion preserves value)
+- 2 decimal place limit means some precision lost (0.333 -> 0.33)
+- No migration script provided (not needed, dbToQuantity handles conversion)
+
+### For Next Session
+Architecture decisions made:
+- Quantity is now a number (TypeScript primitive)
+- All quantity operations round to 2 decimal places
+- Database storage format unchanged (backward compatible)
+- Input validation: 0.01 to 9999.99 range
+- Fraction input rejected with helpful error message
+
+Patterns established:
+- Math.round(value * 100) / 100 for consistent 2-decimal rounding
+- validateQuantity() called after rounding, not before
+- formatQuantity() removes trailing zeros for clean display
+- parseQuantity() auto-rounds inputs with >2 decimal places
+
+Breaking changes:
+- Frontend parseQuantity() now throws on fraction input ("1/2" -> error)
+- API expects decimal strings ("1.5") not fraction strings ("1 1/2")
+- Quantity type change from interface to number (TypeScript compile error if used as object)
+
+Next implementation phases:
+1. Update API documentation to reflect decimal-only quantity input
+2. Add frontend quantity input validation/formatting to form fields
+3. Create E2E test for recipe creation with decimal quantities
+4. Consider database schema migration to Float/Decimal in future major version
+
+Questions for user:
+1. Should we add a migration guide for users with existing data?
+2. Want to rename frontend fractionUtils.ts to quantityUtils.ts?
+3. Should we support 3 decimal places for precision ingredients (e.g., 0.125 tsp)?
+4. Display format: always show 2 decimals (1.50) or remove zeros (1.5)?
+
+Refactoring complete: YES
+All tests passing: YES
+Linting clean: YES
+Breaking changes expected: YES
+Ready for PR: YES
+

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { useToast, type Toast } from '../../contexts/ToastContext';
+import { useToast } from '../../hooks/useToast';
+import type { Toast } from '../../contexts/useToastContext';
 import './Toast.css';
 
 interface ToastItemProps {

@@ -1,9 +1,16 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { prisma } from '../db/client.js';
+import { prisma } from '../db/client';
 
-const JWT_SECRET: string = process.env.JWT_SECRET || 'your-secret-key-change-this';
 const JWT_EXPIRY: string = process.env.JWT_EXPIRY || '7d';
+
+/**
+ * Get JWT secret from environment or use default
+ */
+const getJwtSecret = (): string => {
+  const secret = process.env.JWT_SECRET || 'your-secret-key-change-this';
+  return secret;
+};
 
 /**
  * Hash a password
@@ -24,7 +31,13 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
  * Generate JWT token
  */
 export function generateToken(userId: number): string {
-  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
+  // JWT_EXPIRY is a string like '7d' which is valid for jsonwebtoken's expiresIn option
+  // Cast to unknown first to bypass strict type checking, then cast to object
+  return jwt.sign(
+    { userId },
+    getJwtSecret(),
+    ({ expiresIn: JWT_EXPIRY } as unknown) as object
+  );
 }
 
 /**
@@ -32,7 +45,7 @@ export function generateToken(userId: number): string {
  */
 export function verifyToken(token: string): { userId: number } | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as { userId: number };
+    return jwt.verify(token, getJwtSecret()) as { userId: number };
   } catch {
     return null;
   }

@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { shoppingListService } from '../services/shoppingListService';
 import { formatQuantity } from '../utils/fractionUtils';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { ErrorMessage } from '../components/common/ErrorMessage';
-import { useToast } from '../contexts/ToastContext';
+import { useToast } from '../hooks/useToast';
 import { format, startOfWeek, addDays } from 'date-fns';
 import type { ShoppingList as ShoppingListType } from '../types';
 import './ShoppingList.css';
@@ -25,12 +25,7 @@ export function ShoppingList() {
     return format(weekEnd, 'yyyy-MM-dd');
   });
 
-  useEffect(() => {
-    loadShoppingList();
-    loadCheckedItems();
-  }, [startDate, endDate, dateRange]);
-
-  const loadShoppingList = async () => {
+  const loadShoppingList = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -49,16 +44,21 @@ export function ShoppingList() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [startDate, endDate, dateRange, toast]);
 
-  const loadCheckedItems = async () => {
+  const loadCheckedItems = useCallback(async () => {
     try {
       const ids = await shoppingListService.getCheckedItems();
       setCheckedItems(new Set(ids));
     } catch (error) {
       console.error('Failed to load checked items:', error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadShoppingList();
+    loadCheckedItems();
+  }, [loadShoppingList, loadCheckedItems]);
 
   const toggleItem = async (ingredientId: number) => {
     const newChecked = new Set(checkedItems);

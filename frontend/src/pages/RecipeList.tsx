@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { recipeService } from '../services/recipeService';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { ErrorMessage } from '../components/common/ErrorMessage';
-import { useToast } from '../contexts/ToastContext';
+import { useToast } from '../hooks/useToast';
 import type { Recipe } from '../types';
 import './RecipeList.css';
 
@@ -16,11 +16,7 @@ export function RecipeList() {
   const [sortBy, setSortBy] = useState('name');
   const toast = useToast();
 
-  useEffect(() => {
-    loadRecipes();
-  }, [searchTerm, cuisineFilter, sortBy]);
-
-  const loadRecipes = async () => {
+  const loadRecipes = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -38,7 +34,11 @@ export function RecipeList() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchTerm, cuisineFilter, sortBy, toast]);
+
+  useEffect(() => {
+    loadRecipes();
+  }, [loadRecipes]);
 
   const cuisineTypes = ['Italian', 'Mexican', 'Chinese', 'Indian', 'American', 'Thai', 'Japanese', 'Mediterranean'];
 

@@ -40,15 +40,15 @@ class ApiClient {
     );
   }
 
-  get<T>(url: string, params?: Record<string, any>) {
+  get<T>(url: string, params?: Record<string, unknown>) {
     return this.client.get<T>(url, { params });
   }
 
-  post<T>(url: string, data?: any) {
+  post<T>(url: string, data?: unknown) {
     return this.client.post<T>(url, data);
   }
 
-  put<T>(url: string, data?: any) {
+  put<T>(url: string, data?: unknown) {
     return this.client.put<T>(url, data);
   }
 

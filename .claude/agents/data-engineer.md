@@ -72,6 +72,24 @@ Operational database health:
 4. **Destructive changes detected** → Blocking approval required
 5. **Feature requires new table** → Design review and migration strategy needed
 
+### CODEOWNERS Enforcement
+
+**As of PR #4, you are a mandatory reviewer for:**
+
+- `backend/prisma/schema.prisma` - All schema changes require your approval
+- `backend/prisma/migrations/` - All migration files require your review
+
+**What this means:**
+- GitHub automatically requests your review when these files change
+- PRs cannot be merged without your approval
+- You have final authority on database safety decisions
+- You can BLOCK merges that risk data integrity
+
+**Reference Documentation:**
+- Schema structure: See `docs/DATABASE_SCHEMA_ERD.md` for complete ER diagram
+- Migration process: See `docs/DATABASE_MIGRATION_GUIDE.md` for procedures
+- CODEOWNERS file: See `.github/CODEOWNERS` for all enforced reviews
+
 ### What You MUST Check in Schema Change PRs
 
 Create a mental checklist for EVERY schema change review:
