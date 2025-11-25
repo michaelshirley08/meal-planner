@@ -5,6 +5,7 @@ import {
   convertQuantity,
   toBaseUnits,
   fromBaseUnits,
+  formatQuantityWithUnit,
 } from '../unitConverter';
 
 describe('unitConverter', () => {
@@ -44,115 +45,144 @@ describe('unitConverter', () => {
     });
   });
 
-  // TODO: FRACTIONS REMOVED FROM SCOPE
-  // convertQuantity tests use Quantity (fraction) objects which will be replaced with decimals
-  describe.skip('convertQuantity', () => {
+  describe('convertQuantity', () => {
     it('should convert cups to milliliters', () => {
-      const result = convertQuantity({ whole: 1, num: 0, denom: 1 }, 'cup', 'ml');
-      expect(result.whole).toBe(236);
-      // Allow some tolerance for floating point
-      expect(result.num / result.denom).toBeCloseTo(0.588, 1);
+      const result = convertQuantity(1, 'cup', 'ml');
+      expect(result).toBeCloseTo(236.59, 1);
     });
 
     it('should convert liters to cups', () => {
-      const result = convertQuantity({ whole: 1, num: 0, denom: 1 }, 'L', 'cup');
-      expect(result.whole).toBe(4);
-      // 1L = ~4.227 cups
+      const result = convertQuantity(1, 'L', 'cup');
+      expect(result).toBeCloseTo(4.23, 1);
     });
 
     it('should convert tablespoons to teaspoons', () => {
-      const result = convertQuantity({ whole: 1, num: 0, denom: 1 }, 'tbsp', 'tsp');
-      expect(result.whole).toBe(3);
-      expect(result.num).toBe(0);
+      const result = convertQuantity(1, 'tbsp', 'tsp');
+      expect(result).toBeCloseTo(3, 1);
     });
 
     it('should convert pounds to grams', () => {
-      const result = convertQuantity({ whole: 1, num: 0, denom: 1 }, 'lb', 'g');
-      expect(result.whole).toBe(453);
-      // 1 lb = 453.592g
+      const result = convertQuantity(1, 'lb', 'g');
+      expect(result).toBeCloseTo(453.59, 1);
     });
 
     it('should convert ounces to grams', () => {
-      const result = convertQuantity({ whole: 1, num: 0, denom: 1 }, 'oz', 'g');
-      expect(result.whole).toBe(28);
-      // 1 oz = 28.3495g
+      const result = convertQuantity(1, 'oz', 'g');
+      expect(result).toBeCloseTo(28.35, 1);
     });
 
     it('should handle same unit conversion (no-op)', () => {
-      const qty = { whole: 2, num: 1, denom: 2 };
+      const qty = 2.5;
       const result = convertQuantity(qty, 'cup', 'cup');
-      expect(result).toEqual(qty);
+      expect(result).toBe(qty);
     });
 
     it('should throw when converting between volume and mass', () => {
-      expect(() => convertQuantity(
-        { whole: 1, num: 0, denom: 1 },
-        'cup',
-        'g'
-      )).toThrow('Cannot convert between');
+      expect(() => convertQuantity(1, 'cup', 'g')).toThrow('Cannot convert between');
     });
 
-    it('should convert fractions correctly', () => {
-      const result = convertQuantity({ whole: 0, num: 1, denom: 2 }, 'cup', 'ml');
-      // 0.5 cups = ~118.3 ml
-      expect(result.whole).toBe(118);
+    it('should convert decimal quantities correctly', () => {
+      const result = convertQuantity(0.5, 'cup', 'ml');
+      expect(result).toBeCloseTo(118.29, 1);
+    });
+
+    it('should round to 2 decimal places', () => {
+      const result = convertQuantity(1, 'tsp', 'ml');
+      expect(result).toBe(4.93);
     });
   });
 
   describe('toBaseUnits', () => {
     it('should convert volume to ml', () => {
-      const result = toBaseUnits({ whole: 1, num: 0, denom: 1 }, 'cup');
+      const result = toBaseUnits(1, 'cup');
       expect(result.unit).toBe('ml');
-      expect(result.value).toBeCloseTo(236.588, 0);
+      expect(result.value).toBeCloseTo(236.59, 1);
     });
 
     it('should convert mass to grams', () => {
-      const result = toBaseUnits({ whole: 1, num: 0, denom: 1 }, 'lb');
+      const result = toBaseUnits(1, 'lb');
       expect(result.unit).toBe('g');
-      expect(result.value).toBeCloseTo(453.592, 0);
+      expect(result.value).toBeCloseTo(453.59, 1);
     });
 
-    it('should handle fractions', () => {
-      const result = toBaseUnits({ whole: 0, num: 1, denom: 2 }, 'cup');
+    it('should handle decimal quantities', () => {
+      const result = toBaseUnits(0.5, 'cup');
       expect(result.unit).toBe('ml');
-      expect(result.value).toBeCloseTo(118.294, 0);
+      expect(result.value).toBeCloseTo(118.29, 1);
+    });
+
+    it('should round to 2 decimal places', () => {
+      const result = toBaseUnits(1, 'tsp');
+      expect(result.value).toBe(4.93);
     });
   });
 
   describe('fromBaseUnits', () => {
     it('should convert ml back to cups', () => {
-      const result = fromBaseUnits(236.588, 'ml', 'cup');
-      expect(result.whole).toBe(1);
+      const result = fromBaseUnits(236.59, 'ml', 'cup');
+      expect(result).toBeCloseTo(1, 1);
     });
 
     it('should convert grams back to pounds', () => {
-      const result = fromBaseUnits(453.592, 'g', 'lb');
-      expect(result.whole).toBe(1);
+      const result = fromBaseUnits(453.59, 'g', 'lb');
+      expect(result).toBeCloseTo(1, 1);
     });
 
     it('should throw on unit mismatch', () => {
       expect(() => fromBaseUnits(100, 'ml', 'g')).toThrow();
       expect(() => fromBaseUnits(100, 'g', 'cup')).toThrow();
     });
+
+    it('should round to 2 decimal places', () => {
+      const result = fromBaseUnits(10, 'ml', 'tsp');
+      expect(result).toBe(2.03);
+    });
+  });
+
+  describe('formatQuantityWithUnit', () => {
+    it('should format with short style', () => {
+      expect(formatQuantityWithUnit(2, 'cup')).toBe('2 cup');
+      expect(formatQuantityWithUnit(1.5, 'tsp')).toBe('1.5 tsp');
+    });
+
+    it('should format with long style and pluralization', () => {
+      expect(formatQuantityWithUnit(1, 'cup', { style: 'long' })).toBe('1 cup');
+      expect(formatQuantityWithUnit(2, 'cup', { style: 'long' })).toBe('2 cups');
+      expect(formatQuantityWithUnit(0.5, 'tsp', { style: 'long' })).toBe('0.5 teaspoons');
+    });
+
+    it('should remove trailing zeros', () => {
+      expect(formatQuantityWithUnit(2, 'cup')).toBe('2 cup');
+      expect(formatQuantityWithUnit(1.5, 'cup')).toBe('1.5 cup');
+    });
+
+    it('should respect decimal places option', () => {
+      expect(formatQuantityWithUnit(1.5, 'cup', { decimalPlaces: 0 })).toBe('2 cup');
+      expect(formatQuantityWithUnit(1.567, 'cup', { decimalPlaces: 3 })).toBe('1.567 cup');
+    });
   });
 
   describe('practical cooking scenarios', () => {
     it('should aggregate 2 cups and 1 tbsp to ml', () => {
-      const cup2 = toBaseUnits({ whole: 2, num: 0, denom: 1 }, 'cup');
-      const tbsp1 = toBaseUnits({ whole: 1, num: 0, denom: 1 }, 'tbsp');
+      const cup2 = toBaseUnits(2, 'cup');
+      const tbsp1 = toBaseUnits(1, 'tbsp');
       const total = cup2.value + tbsp1.value;
-      // 2 cups + 1 tbsp = ~488ml
-      expect(total).toBeCloseTo(488.3, 0);
+      expect(total).toBeCloseTo(487.96, 1);
     });
 
-    it('should handle recipe scaling (2x)', () => {
-      const scaled = convertQuantity(
-        { whole: 1, num: 1, denom: 2 },
-        'cup',
-        'ml'
-      );
-      // 1.5 cups = ~354.9ml
-      expect(scaled.whole).toBe(354);
+    it('should handle recipe scaling (1.5x)', () => {
+      const scaled = convertQuantity(1.5, 'cup', 'ml');
+      expect(scaled).toBeCloseTo(354.88, 1);
+    });
+
+    it('should handle small decimal quantities', () => {
+      const result = convertQuantity(0.25, 'tsp', 'ml');
+      expect(result).toBeCloseTo(1.23, 1);
+    });
+
+    it('should handle large quantities', () => {
+      const result = convertQuantity(100, 'g', 'kg');
+      expect(result).toBe(0.1);
     });
   });
 });

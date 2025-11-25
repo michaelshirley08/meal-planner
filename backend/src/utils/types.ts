@@ -1,14 +1,13 @@
 /**
- * Represents a quantity as a fraction with a whole number part
- * Example: 1 1/2 = { whole: 1, num: 1, denom: 2 }
- * Example: 3/4 = { whole: 0, num: 3, denom: 4 }
- * Example: 2 = { whole: 2, num: 0, denom: 1 }
+ * Represents a quantity as a decimal number
+ * Example: 1.5 (instead of 1 1/2)
+ * Example: 0.75 (instead of 3/4)
+ * Example: 2.0
+ *
+ * Quantities should be limited to 2 decimal places in user input
+ * and should be validated to be between 0.01 and 9999.99
  */
-export interface Quantity {
-  whole: number;
-  num: number;
-  denom: number;
-}
+export type Quantity = number;
 
 /**
  * Supported volume units (convert to milliliters)

@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { authMiddleware } from '../middleware/authMiddleware';
 import * as recipeService from '../services/recipeService';
-import { parseQuantity } from '../utils/fractionParser';
+import { parseQuantityFromAPI } from '../utils/quantityUtils';
 
 const router = Router();
 
@@ -122,11 +122,11 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
       return;
     }
 
-    // Parse quantities from API format (strings like "1/2", "2", etc)
+    // Parse quantities from API format (strings like "1.5", "2", etc)
     const parsedIngredients = ingredients.map(
       (ing: { ingredientId: number; quantity: unknown; unit: string; prepNotes?: string }) => ({
       ingredientId: ing.ingredientId,
-      quantity: typeof ing.quantity === 'string' ? parseQuantity(ing.quantity) : ing.quantity,
+      quantity: typeof ing.quantity === 'string' ? parseQuantityFromAPI(ing.quantity) : ing.quantity,
       unit: ing.unit,
       prepNotes: ing.prepNotes
     }));
@@ -162,7 +162,7 @@ router.put('/:id', async (req: Request, res: Response, next: NextFunction) => {
       ? ingredients.map(
           (ing: { ingredientId: number; quantity: unknown; unit: string; prepNotes?: string }) => ({
           ingredientId: ing.ingredientId,
-          quantity: typeof ing.quantity === 'string' ? parseQuantity(ing.quantity) : ing.quantity,
+          quantity: typeof ing.quantity === 'string' ? parseQuantityFromAPI(ing.quantity) : ing.quantity,
           unit: ing.unit,
           prepNotes: ing.prepNotes
         }))
