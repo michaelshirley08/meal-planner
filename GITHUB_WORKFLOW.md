@@ -234,6 +234,29 @@ OR
 - **Normal PRs:** Within 24 hours
 - **Large PRs:** Within 48 hours
 
+### CODEOWNERS - Mandatory Reviews
+
+**As of PR #4**, certain files require approval from specific team members:
+
+| Files/Directories | Required Reviewer | Reason |
+|-------------------|-------------------|---------|
+| `backend/prisma/schema.prisma` | @data-engineer | Database schema safety |
+| `backend/prisma/migrations/` | @data-engineer | Migration validation |
+| `.github/workflows/` | @tech-lead | CI/CD integrity |
+| `docs/` | @tech-lead | Technical accuracy |
+| `*.md` (root level) | @tech-lead | Documentation quality |
+| `frontend/src/components/` | @ux-designer | UX consistency |
+| `frontend/src/pages/` | @ux-designer | UX standards |
+| `backend/src/routes/` | @tech-lead | API architecture |
+| `.claude/agents/*.md` | *Self-review* | Agent instructions |
+
+**What this means:**
+- PRs changing these files automatically request review from the assigned owner
+- PRs cannot be merged without the required approvals
+- This protects critical infrastructure and ensures expert review
+
+**For more details**, see `.github/CODEOWNERS`
+
 ---
 
 ## Testing Requirements

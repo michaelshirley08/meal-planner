@@ -762,14 +762,27 @@ If this migration needs to be reverted in production:
 7. **Never change types without migration**
 8. **Never cascade delete without thought**
 
+## Related Documentation
+
+### Schema Documentation
+- **DATABASE_SCHEMA_ERD.md** - Complete entity relationship diagram showing all tables, relationships, cascade delete rules, and unique constraints. **Review this before making schema changes to understand impact.**
+
+### Code Review Requirements
+- **.github/CODEOWNERS** - Data Engineer is mandatory reviewer for all schema and migration changes (enforced by GitHub)
+
+### Other Guides
+- **DATA_ENGINEER_RECOMMENDATIONS.md** - Additional database safety guidelines and best practices
+- **SINGLE_USER_SCHEMA.md** - Single-user architecture decisions and schema design rationale
+
 ## Getting Help
 
 If you're unsure about a migration:
 
 1. **Ask in #database channel** - Ask Data Engineer
 2. **Review this guide** - Likely has your pattern
-3. **Test thoroughly** - Backup and rollback locally
-4. **Request review** - Tag Data Engineer in PR
-5. **Don't rush** - Better to get it right
+3. **Check DATABASE_SCHEMA_ERD.md** - Understand current schema and relationships
+4. **Test thoroughly** - Backup and rollback locally
+5. **Request review** - Tag Data Engineer in PR (automatically requested via CODEOWNERS)
+6. **Don't rush** - Better to get it right
 
 **Remember: Bad code can be fixed. Bad migrations lose data forever.**
