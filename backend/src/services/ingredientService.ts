@@ -1,4 +1,4 @@
-import { prisma } from '../db/client.js';
+import { prisma } from '../db/client';
 
 /**
  * Search for ingredients by name with autocomplete

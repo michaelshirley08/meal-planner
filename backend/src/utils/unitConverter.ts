@@ -1,5 +1,5 @@
-import { Quantity, VolumeUnit, MassUnit, Unit } from './types.js';
-import { multiplyQuantity, formatQuantity } from './fractionMath.js';
+import { Quantity, VolumeUnit, MassUnit, Unit } from './types';
+import { multiplyQuantity, formatQuantity } from './fractionMath';
 
 /**
  * Convert volume units to milliliters

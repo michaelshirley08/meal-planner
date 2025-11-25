@@ -4,7 +4,8 @@ import {
   getMassUnits,
   convertQuantity,
   toBaseUnits,
-} from '../unitConverter.js';
+  fromBaseUnits,
+} from '../unitConverter';
 
 describe('unitConverter', () => {
   describe('getMeasurementType', () => {
@@ -25,7 +26,7 @@ describe('unitConverter', () => {
     });
 
     it('should throw on unknown unit', () => {
-      expect(() => getMeasurementType('invalid' as unknown as string)).toThrow('Unknown unit');
+      expect(() => getMeasurementType('invalid' as any)).toThrow('Unknown unit');
     });
   });
 

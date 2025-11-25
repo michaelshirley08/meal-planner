@@ -1,6 +1,6 @@
-import { Quantity } from './types.js';
-import { formatQuantity as formatQty } from './fractionMath.js';
-import { parseQuantity } from './fractionParser.js';
+import { Quantity } from './types';
+import { formatQuantity as formatQty } from './fractionMath';
+import { parseQuantity } from './fractionParser';
 
 /**
  * Utility to convert database quantity fields to Quantity object

@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
-import { authMiddleware } from '../middleware/authMiddleware.js';
-import * as mealPlanService from '../services/mealPlanService.js';
+import { authMiddleware } from '../middleware/authMiddleware';
+import * as mealPlanService from '../services/mealPlanService';
 
 const router = Router();
 

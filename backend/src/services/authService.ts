@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { prisma } from '../db/client.js';
+import { prisma } from '../db/client';
 
 const JWT_SECRET: string = process.env.JWT_SECRET || 'your-secret-key-change-this';
 const JWT_EXPIRY: string = process.env.JWT_EXPIRY || '7d';

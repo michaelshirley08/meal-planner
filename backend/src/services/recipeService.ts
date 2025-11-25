@@ -1,6 +1,6 @@
-import { prisma } from '../db/client.js';
-import { quantityToDb, dbToQuantity } from '../utils/quantityUtils.js';
-import { Quantity } from '../utils/types.js';
+import { prisma } from '../db/client';
+import { quantityToDb, dbToQuantity } from '../utils/quantityUtils';
+import { Quantity } from '../utils/types';
 
 export interface RecipeIngredientInput {
   ingredientId: number;

@@ -1,4 +1,4 @@
-import { parseQuantity, quantityToDecimal } from '../fractionParser.js';
+import { parseQuantity, quantityToDecimal } from '../fractionParser';
 
 describe('fractionParser', () => {
   describe('parseQuantity', () => {

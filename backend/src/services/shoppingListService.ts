@@ -1,8 +1,8 @@
-import { prisma } from '../db/client.js';
-import { Quantity } from '../utils/types.js';
-import { addQuantities, multiplyQuantity } from '../utils/fractionMath.js';
-import { dbToQuantity } from '../utils/quantityUtils.js';
-import { getMeasurementType, toBaseUnits } from '../utils/unitConverter.js';
+import { prisma } from '../db/client';
+import { Quantity } from '../utils/types';
+import { addQuantities, multiplyQuantity } from '../utils/fractionMath';
+import { dbToQuantity } from '../utils/quantityUtils';
+import { getMeasurementType, toBaseUnits } from '../utils/unitConverter';
 
 export interface AggregatedIngredient {
   ingredientId: number;

@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { recipeService } from '../services/recipeService';
 import { ingredientService } from '../services/ingredientService';
 import { parseQuantity } from '../utils/fractionUtils';
-import type { Ingredient } from '../types';
+import type { Ingredient, Recipe, RecipeIngredient } from '../types';
 import './RecipeForm.css';
 
 interface RecipeIngredientInput {
@@ -144,7 +144,7 @@ export function RecipeForm() {
     setSubmitting(true);
 
     try {
-      const recipeData = {
+      const recipeData: Partial<Recipe> = {
         name,
         description: description || undefined,
         cuisineType: cuisineType || undefined,
@@ -153,16 +153,21 @@ export function RecipeForm() {
         cookTime: cookTime ? parseInt(cookTime) : undefined,
         instructions: instructions || undefined,
         imageUrl: imageUrl || undefined,
-        ingredients: ingredients.map((ing, index) => {
-          const quantity = parseQuantity(ing.quantityInput);
-          return {
-            ingredientId: ing.ingredientId,
-            quantity,
-            unit: ing.unit,
-            prepNote: ing.prepNote || undefined,
-            displayOrder: index,
-          };
-        }),
+        ingredients: ingredients.map((ing, index) => ({
+          id: ing.id || 0,
+          ingredientId: ing.ingredientId,
+          ingredient: {
+            id: ing.ingredientId,
+            name: ing.ingredientName,
+            category: '',
+            categoryId: 0,
+            measurementType: 'volume' as const,
+          },
+          quantity: parseQuantity(ing.quantityInput),
+          unit: ing.unit,
+          prepNote: ing.prepNote || undefined,
+          displayOrder: index,
+        })) as RecipeIngredient[],
       };
 
       if (isEditing) {

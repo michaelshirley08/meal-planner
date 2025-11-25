@@ -6,7 +6,7 @@ import {
   divideQuantity,
   compareQuantities,
   formatQuantity,
-} from '../fractionMath.js';
+} from '../fractionMath';
 
 describe('fractionMath', () => {
   describe('normalize', () => {

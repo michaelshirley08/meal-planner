@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { authMiddleware } from '../middleware/authMiddleware.js';
-import * as recipeService from '../services/recipeService.js';
-import { parseQuantity } from '../utils/fractionParser.js';
+import { authMiddleware } from '../middleware/authMiddleware';
+import * as recipeService from '../services/recipeService';
+import { parseQuantity } from '../utils/fractionParser';
 
 const router = Router();
 

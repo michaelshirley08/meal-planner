@@ -32,7 +32,7 @@ describe('Authentication Service', () => {
 
       // Get the mocked apiClient
       const { apiClient } = await import('../services/api');
-      const mockPost = apiClient.post as unknown;
+      const mockPost = apiClient.post as unknown as ReturnType<typeof vi.fn>;
       mockPost.mockResolvedValueOnce({ data: mockResponse });
 
       const result = await authService.register({
@@ -68,7 +68,7 @@ describe('Authentication Service', () => {
 
       // Get the mocked apiClient
       const { apiClient } = await import('../services/api');
-      const mockPost = apiClient.post as unknown;
+      const mockPost = apiClient.post as unknown as ReturnType<typeof vi.fn>;
       mockPost.mockResolvedValueOnce({ data: mockResponse });
 
       const result = await authService.login({
@@ -152,12 +152,12 @@ describe('Authentication Service', () => {
 
   describe('isAuthenticated', () => {
     it('should return true when token exists', () => {
-      (localStorage.getItem as unknown as typeof localStorage.getItem).mockReturnValueOnce('test-token');
+      (localStorage.getItem as unknown as ReturnType<typeof vi.fn>).mockReturnValueOnce('test-token');
       expect(authService.isAuthenticated()).toBe(true);
     });
 
     it('should return false when token does not exist', () => {
-      (localStorage.getItem as unknown as typeof localStorage.getItem).mockReturnValueOnce(null);
+      (localStorage.getItem as unknown as ReturnType<typeof vi.fn>).mockReturnValueOnce(null);
       expect(authService.isAuthenticated()).toBe(false);
     });
   });
