@@ -53,8 +53,8 @@ export function errorHandler(
 
   // Check if error already has a status code (e.g., from body-parser)
   const errWithStatus = err as Error & { status?: number; statusCode?: number };
-  if (errWithStatus.status || errWithStatus.statusCode) {
-    const statusCode = errWithStatus.status || errWithStatus.statusCode;
+  const statusCode = errWithStatus.status || errWithStatus.statusCode;
+  if (statusCode) {
     res.status(statusCode).json({
       error: err.message || 'Bad request',
     });

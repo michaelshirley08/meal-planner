@@ -138,14 +138,12 @@ export async function searchRecipes(userId: number, query: string, limit: number
       OR: [
         {
           name: {
-            contains: query,
-            mode: 'insensitive'
+            contains: query
           }
         },
         {
           description: {
-            contains: query,
-            mode: 'insensitive'
+            contains: query
           }
         }
       ]

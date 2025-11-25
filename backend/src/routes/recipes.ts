@@ -124,12 +124,20 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
 
     // Parse quantities from API format (strings like "1.5", "2", etc)
     const parsedIngredients = ingredients.map(
-      (ing: { ingredientId: number; quantity: unknown; unit: string; prepNotes?: string }) => ({
-      ingredientId: ing.ingredientId,
-      quantity: typeof ing.quantity === 'string' ? parseQuantityFromAPI(ing.quantity) : ing.quantity,
-      unit: ing.unit,
-      prepNotes: ing.prepNotes
-    }));
+      (ing: { ingredientId: number; quantity: unknown; unit: string; prepNotes?: string }) => {
+        const quantity = typeof ing.quantity === 'string'
+          ? parseQuantityFromAPI(ing.quantity)
+          : typeof ing.quantity === 'number'
+          ? ing.quantity
+          : 1;
+        return {
+          ingredientId: ing.ingredientId,
+          quantity,
+          unit: ing.unit,
+          prepNotes: ing.prepNotes
+        };
+      }
+    );
 
     const recipe = await recipeService.createRecipe(req.userId!, {
       name,
