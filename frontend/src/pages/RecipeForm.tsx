@@ -78,7 +78,7 @@ export function RecipeForm() {
             id: ing.id,
             ingredientId: ing.ingredientId,
             ingredientName: ing.ingredient.name,
-            quantityInput: `${ing.quantity.whole || ''} ${ing.quantity.num}/${ing.quantity.denom}`.trim(),
+            quantityInput: ing.quantity.toString(),
             unit: ing.unit,
             prepNote: ing.prepNote || '',
             displayOrder: index,

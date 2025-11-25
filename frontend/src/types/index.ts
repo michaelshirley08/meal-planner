@@ -1,10 +1,11 @@
 // Core Types for Meal Planner Frontend
 
-export interface Quantity {
-  whole: number;
-  num: number;
-  denom: number;
-}
+/**
+ * Represents a quantity as a decimal number
+ * Example: 1.5 (instead of 1 1/2)
+ * Limited to 2 decimal places
+ */
+export type Quantity = number;
 
 export interface User {
   id: number;
