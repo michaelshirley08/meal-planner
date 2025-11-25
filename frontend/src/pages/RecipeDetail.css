@@ -1,0 +1,295 @@
+.recipe-detail-page {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.recipe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.back-link {
+  color: #667eea;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.recipe-header h1 {
+  margin: 0.5rem 0;
+  color: #333;
+}
+
+.recipe-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-secondary {
+  padding: 0.625rem 1.25rem;
+  background: white;
+  color: #667eea;
+  border: 1px solid #667eea;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+  background: #667eea;
+  color: white;
+}
+
+.btn-danger {
+  padding: 0.625rem 1.25rem;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-danger:hover {
+  background: #c82333;
+}
+
+.recipe-hero-image {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.recipe-meta-bar {
+  display: flex;
+  gap: 2rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.meta-label {
+  font-size: 0.875rem;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.meta-value {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.recipe-description {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.recipe-description p {
+  margin: 0;
+  color: #666;
+  line-height: 1.6;
+}
+
+.recipe-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .recipe-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ingredients-section,
+.instructions-section {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.ingredients-section h2,
+.instructions-section h2 {
+  margin: 0 0 1rem 0;
+  color: #667eea;
+  font-size: 1.25rem;
+}
+
+.ingredients-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ingredients-list li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ingredients-list li:last-child {
+  border-bottom: none;
+}
+
+.ingredient-quantity {
+  font-weight: 600;
+  color: #667eea;
+  min-width: 80px;
+}
+
+.ingredient-name {
+  color: #333;
+}
+
+.ingredient-prep {
+  color: #666;
+  font-style: italic;
+}
+
+.instructions-text {
+  color: #333;
+  line-height: 1.8;
+  white-space: pre-line;
+}
+
+.ratings-section {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.ratings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.ratings-header h2 {
+  margin: 0;
+  color: #667eea;
+  font-size: 1.25rem;
+}
+
+.rating-form {
+  background: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.star-rating {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.star {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  filter: grayscale(100%);
+  transition: filter 0.2s;
+}
+
+.star.active,
+.star:hover {
+  filter: grayscale(0%);
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.ratings-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.rating-item {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.rating-item:last-child {
+  border-bottom: none;
+}
+
+.rating-stars {
+  font-size: 1.125rem;
+  margin-bottom: 0.25rem;
+}
+
+.rating-date {
+  font-size: 0.875rem;
+  color: #999;
+  margin-bottom: 0.5rem;
+}
+
+.rating-notes {
+  margin: 0.5rem 0 0 0;
+  color: #666;
+  line-height: 1.6;
+}
+
+.error {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #dc3545;
+  font-size: 1.25rem;
+}

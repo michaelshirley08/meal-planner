@@ -1,0 +1,117 @@
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { prisma } from '../db/client.js';
+
+const JWT_SECRET: string = process.env.JWT_SECRET || 'your-secret-key-change-this';
+const JWT_EXPIRY: string = process.env.JWT_EXPIRY || '7d';
+
+/**
+ * Hash a password
+ */
+export async function hashPassword(password: string): Promise<string> {
+  const salt = await bcrypt.genSalt(10);
+  return bcrypt.hash(password, salt);
+}
+
+/**
+ * Verify a password against hash
+ */
+export async function verifyPassword(password: string, hash: string): Promise<boolean> {
+  return bcrypt.compare(password, hash);
+}
+
+/**
+ * Generate JWT token
+ */
+export function generateToken(userId: number): string {
+  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
+}
+
+/**
+ * Verify and decode JWT token
+ */
+export function verifyToken(token: string): { userId: number } | null {
+  try {
+    return jwt.verify(token, JWT_SECRET) as { userId: number };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Register a new user
+ */
+export async function registerUser(
+  email: string,
+  username: string,
+  password: string
+): Promise<{ user: { id: number; email: string; username: string }; token: string }> {
+  // Check if user exists
+  const existingUser = await prisma.user.findFirst({
+    where: {
+      OR: [{ email }, { username }]
+    }
+  });
+
+  if (existingUser) {
+    if (existingUser.email === email) {
+      throw new Error('Email already registered');
+    }
+    if (existingUser.username === username) {
+      throw new Error('Username already taken');
+    }
+  }
+
+  // Hash password and create user
+  const hashedPassword = await hashPassword(password);
+  const newUser = await prisma.user.create({
+    data: {
+      email,
+      username,
+      password: hashedPassword
+    }
+  });
+
+  const token = generateToken(newUser.id);
+
+  return {
+    user: {
+      id: newUser.id,
+      email: newUser.email,
+      username: newUser.username
+    },
+    token
+  };
+}
+
+/**
+ * Login user
+ */
+export async function loginUser(
+  email: string,
+  password: string
+): Promise<{ user: { id: number; email: string; username: string }; token: string }> {
+  const user = await prisma.user.findUnique({
+    where: { email }
+  });
+
+  if (!user) {
+    throw new Error('Invalid email or password');
+  }
+
+  const isValidPassword = await verifyPassword(password, user.password);
+  if (!isValidPassword) {
+    throw new Error('Invalid email or password');
+  }
+
+  const token = generateToken(user.id);
+
+  return {
+    user: {
+      id: user.id,
+      email: user.email,
+      username: user.username
+    },
+    token
+  };
+}

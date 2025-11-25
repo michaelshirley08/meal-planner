@@ -1,0 +1,129 @@
+// Meal Planner - POC Schema (Simplified)
+// Single-user local application
+// Last updated: November 25, 2025
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// RECIPES
+// ============================================================================
+
+model Recipe {
+  id              Int                 @id @default(autoincrement())
+  name            String
+  description     String?
+  defaultServings Int                 @default(4)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  ingredients     RecipeIngredient[]
+  instructions    RecipeInstruction[]
+  mealPlans       MealPlan[]
+
+  @@map("recipes")
+}
+
+// ============================================================================
+// INGREDIENTS
+// ============================================================================
+
+model Ingredient {
+  id                Int                @id @default(autoincrement())
+  name              String             @unique
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  recipeIngredients RecipeIngredient[]
+
+  @@index([name])
+  @@map("ingredients")
+}
+
+// ============================================================================
+// RECIPE INGREDIENTS (Junction Table)
+// ============================================================================
+
+model RecipeIngredient {
+  id            Int        @id @default(autoincrement())
+  recipeId      Int
+  ingredientId  Int
+  quantityWhole Int        // Whole number part (1 in "1 1/2")
+  quantityNum   Int        // Numerator (1 in "1/2")
+  quantityDenom Int        // Denominator (2 in "1/2")
+  unit          String     // cup, tbsp, lb, oz, etc.
+  displayOrder  Int        // Order to display ingredients
+  createdAt     DateTime   @default(now())
+  ingredient    Ingredient @relation(fields: [ingredientId], references: [id])
+  recipe        Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([recipeId, ingredientId])
+  @@index([recipeId])
+  @@index([ingredientId])
+  @@map("recipe_ingredients")
+}
+
+// ============================================================================
+// RECIPE INSTRUCTIONS
+// ============================================================================
+
+model RecipeInstruction {
+  id           Int      @id @default(autoincrement())
+  recipeId     Int
+  stepNumber   Int      // Step number (1, 2, 3)
+  text         String   // Instruction text
+  displayOrder Int      // Order to display steps (allows reordering)
+  recipe       Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([recipeId, stepNumber])
+  @@index([recipeId])
+  @@map("recipe_instructions")
+}
+
+// ============================================================================
+// MEAL PLANNING
+// ============================================================================
+
+model MealPlan {
+  id        Int      @id @default(autoincrement())
+  recipeId  Int
+  date      DateTime // Date of the meal
+  mealType  String   // breakfast, lunch, dinner, snack
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([recipeId, date, mealType]) // Can't schedule same recipe twice for same meal
+  @@index([date])
+  @@map("meal_plans")
+}
+
+// ============================================================================
+// NOTES
+// ============================================================================
+
+// POC Scope: 5 tables only
+// - Recipe: Core recipe data
+// - Ingredient: Global ingredient library
+// - RecipeIngredient: Links recipes to ingredients with quantities (fractions)
+// - RecipeInstruction: Step-by-step cooking instructions
+// - MealPlan: Scheduled meals on calendar
+
+// Deferred to Post-POC:
+// - ShoppingList (see SHOPPING_LIST_EPIC.md)
+// - ShoppingListItem
+// - RecipeRating (simplified: will be added to Recipe model later)
+// - IngredientCategory (will be added to Ingredient model later)
+// - IngredientCustomization
+// - User (no authentication needed)
+
+// Schema Design Principles:
+// 1. Fractions stored as three integers (whole, numerator, denominator)
+// 2. No user authentication (single-user local app)
+// 3. Cascade deletes to maintain referential integrity
+// 4. Indexes on foreign keys for performance
+// 5. Timestamps for audit trail

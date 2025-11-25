@@ -1,0 +1,164 @@
+// Meal Planner - Single User Schema
+// This schema is designed for a local, single-user installable application
+// Multi-user concepts (authentication, user isolation) have been removed
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// RECIPE MODELS
+// ============================================================================
+
+model Recipe {
+  id              Int                 @id @default(autoincrement())
+  name            String
+  description     String?
+  cuisineType     String?
+  prepMinutes     Int?
+  cookMinutes     Int?
+  defaultServings Int                 @default(4)
+  photoUrl        String?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  mealPlans       MealPlan[]
+  ingredients     RecipeIngredient[]
+  instructions    RecipeInstruction[]
+  ratings         RecipeRating[]
+
+  @@map("recipes")
+}
+
+model RecipeIngredient {
+  id            Int        @id @default(autoincrement())
+  recipeId      Int
+  ingredientId  Int
+  quantityWhole Int
+  quantityNum   Int
+  quantityDenom Int
+  unit          String
+  prepNotes     String?
+  displayOrder  Int
+  createdAt     DateTime   @default(now())
+  ingredient    Ingredient @relation(fields: [ingredientId], references: [id])
+  recipe        Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([recipeId, ingredientId])
+  @@index([recipeId])
+  @@index([ingredientId])
+  @@map("recipe_ingredients")
+}
+
+model RecipeInstruction {
+  id           Int    @id @default(autoincrement())
+  recipeId     Int
+  stepNumber   Int
+  text         String
+  displayOrder Int
+  recipe       Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([recipeId, stepNumber])
+  @@index([recipeId])
+  @@map("recipe_instructions")
+}
+
+// ============================================================================
+// INGREDIENT MODELS
+// ============================================================================
+
+model Ingredient {
+  id                Int                       @id @default(autoincrement())
+  name              String                    @unique
+  categoryId        Int?
+  aliases           String?
+  typicalUnit       String?
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
+  customization     IngredientCustomization?
+  category          IngredientCategory?       @relation(fields: [categoryId], references: [id])
+  recipeIngredients RecipeIngredient[]
+
+  @@index([name])
+  @@index([categoryId])
+  @@map("ingredients")
+}
+
+model IngredientCategory {
+  id           Int          @id @default(autoincrement())
+  name         String       @unique
+  displayOrder Int          @default(0)
+  color        String?
+  createdAt    DateTime     @default(now())
+  ingredients  Ingredient[]
+
+  @@map("ingredient_categories")
+}
+
+model IngredientCustomization {
+  id            Int        @id @default(autoincrement())
+  ingredientId  Int        @unique
+  preferredUnit String?
+  notes         String?
+  ingredient    Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+
+  @@map("ingredient_customizations")
+}
+
+// ============================================================================
+// RATING & HISTORY MODELS
+// ============================================================================
+
+model RecipeRating {
+  id        Int      @id @default(autoincrement())
+  recipeId  Int
+  rating    Int
+  notes     String?
+  dateMade  DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([recipeId, dateMade])
+  @@index([recipeId])
+  @@map("recipe_ratings")
+}
+
+// ============================================================================
+// MEAL PLANNING MODELS
+// ============================================================================
+
+model MealPlan {
+  id              Int      @id @default(autoincrement())
+  recipeId        Int
+  date            DateTime
+  mealType        String
+  servingOverride Int?
+  notes           String?
+  completed       Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  recipe          Recipe   @relation(fields: [recipeId], references: [id])
+
+  @@unique([recipeId, date, mealType])
+  @@index([date])
+  @@map("meal_plans")
+}
+
+// ============================================================================
+// SHOPPING LIST MODELS
+// ============================================================================
+
+model ShoppingListItem {
+  id           Int      @id @default(autoincrement())
+  ingredientId Int      @unique
+  checked      Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("shopping_list_items")
+}

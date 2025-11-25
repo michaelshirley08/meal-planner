@@ -1,0 +1,119 @@
+.dashboard h1 {
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.dashboard-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-card h2 {
+  margin: 0 0 1rem 0;
+  color: #667eea;
+  font-size: 1.25rem;
+}
+
+.quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.action-btn {
+  display: block;
+  padding: 0.75rem;
+  background: #667eea;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+.action-btn:hover {
+  background: #5568d3;
+}
+
+.empty-state {
+  color: #999;
+  font-style: italic;
+  margin: 1rem 0;
+}
+
+.meal-list, .recipe-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.meal-item, .recipe-item {
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.meal-item:last-child, .recipe-item:last-child {
+  border-bottom: none;
+}
+
+.meal-date {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.meal-type {
+  font-size: 0.875rem;
+  color: #667eea;
+  text-transform: capitalize;
+}
+
+.meal-recipe {
+  font-weight: 500;
+}
+
+.recipe-item a {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.recipe-item a:hover {
+  color: #667eea;
+}
+
+.recipe-meta {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.view-all {
+  display: inline-block;
+  margin-top: 1rem;
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.view-all:hover {
+  text-decoration: underline;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 1.25rem;
+  color: #667eea;
+}

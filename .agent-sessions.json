@@ -1,0 +1,17 @@
+{
+  "tech-lead": {
+    "session_id": null,
+    "last_updated": null,
+    "status": "ready"
+  },
+  "junior-engineer": {
+    "session_id": null,
+    "last_updated": null,
+    "status": "ready"
+  },
+  "qa-specialist": {
+    "session_id": null,
+    "last_updated": null,
+    "status": "ready"
+  }
+}

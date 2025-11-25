@@ -1,0 +1,278 @@
+.shopping-list-page {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-secondary {
+  padding: 0.625rem 1.25rem;
+  background: white;
+  color: #667eea;
+  border: 1px solid #667eea;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+  background: #667eea;
+  color: white;
+}
+
+.date-controls {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.date-presets {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-preset {
+  padding: 0.5rem 1rem;
+  background: white;
+  color: #667eea;
+  border: 1px solid #667eea;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-preset:hover {
+  background: #667eea;
+  color: white;
+}
+
+.btn-preset.active {
+  background: #667eea;
+  color: white;
+}
+
+.date-inputs {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.date-inputs input {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.date-inputs input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.list-summary {
+  background: #f9f9f9;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.list-summary p {
+  margin: 0.25rem 0;
+  color: #666;
+}
+
+.list-summary p:first-child {
+  font-weight: 500;
+  color: #333;
+}
+
+.shopping-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.category-section {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.category-title {
+  margin: 0 0 1rem 0;
+  color: #667eea;
+  font-size: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #667eea;
+}
+
+.items-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #eee;
+  transition: opacity 0.3s;
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.item.checked {
+  opacity: 0.5;
+}
+
+.item.checked .item-name {
+  text-decoration: line-through;
+}
+
+.item-checkbox {
+  display: flex;
+  align-items: flex-start;
+  cursor: pointer;
+  position: relative;
+}
+
+.item-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checkmark {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-checkbox:hover .checkmark {
+  border-color: #667eea;
+}
+
+.item-checkbox input:checked ~ .checkmark {
+  background: #667eea;
+  border-color: #667eea;
+}
+
+.item-checkbox input:checked ~ .checkmark::after {
+  content: '✓';
+  color: white;
+  font-weight: bold;
+}
+
+.item-content {
+  flex: 1;
+}
+
+.item-main {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: baseline;
+  margin-bottom: 0.25rem;
+}
+
+.item-quantity {
+  font-weight: 600;
+  color: #667eea;
+  min-width: 80px;
+}
+
+.item-name {
+  color: #333;
+  font-weight: 500;
+}
+
+.item-prep {
+  color: #666;
+  font-style: italic;
+  font-size: 0.9375rem;
+}
+
+.item-recipes {
+  font-size: 0.875rem;
+  color: #999;
+  margin-top: 0.25rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 8px;
+}
+
+.empty-state p {
+  color: #999;
+  margin: 0.5rem 0;
+}
+
+.empty-state p:first-child {
+  font-size: 1.25rem;
+  color: #666;
+}
+
+.empty-hint {
+  font-size: 1rem;
+  font-style: italic;
+}
+
+@media print {
+  .page-header,
+  .date-controls,
+  .header-actions {
+    display: none !important;
+  }
+
+  .item-checkbox input:checked ~ .checkmark {
+    background: white;
+    border-color: #333;
+  }
+
+  .item-checkbox input:checked ~ .checkmark::after {
+    color: #333;
+  }
+
+  .item.checked {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .item-main {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .item-quantity {
+    min-width: auto;
+  }
+}
