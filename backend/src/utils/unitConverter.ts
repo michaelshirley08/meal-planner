@@ -1,6 +1,9 @@
 import { Quantity, VolumeUnit, MassUnit, Unit } from './types';
 import { multiplyQuantity, formatQuantity } from './fractionMath';
 
+// Re-export types for convenience
+export type { Unit, VolumeUnit, MassUnit } from './types';
+
 /**
  * Convert volume units to milliliters
  */
