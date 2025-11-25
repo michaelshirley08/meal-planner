@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { loginUser, navigateTo, expectErrorMessage } from '../helpers/testHelpers';
+import { loginUser, navigateTo } from '../helpers/testHelpers';
 import { testUser1 } from '../fixtures/testUsers';
 
 /**

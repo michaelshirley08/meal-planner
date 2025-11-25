@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { WeeklyCalendar } from '../components/meal-plan/WeeklyCalendar';
 import { AddMealModal } from '../components/meal-plan/AddMealModal';
 import { mealPlanService } from '../services/mealPlanService';
-import { useToast } from '../contexts/ToastContext';
+import { useToast } from '../hooks/useToast';
 import {
   getCurrentWeekStart,
   getNextWeek,
@@ -22,11 +22,7 @@ export function MealPlan() {
   const [selectedMealType, setSelectedMealType] = useState<MealType>('breakfast');
   const toast = useToast();
 
-  useEffect(() => {
-    loadMeals();
-  }, [weekStart]);
-
-  const loadMeals = async () => {
+  const loadMeals = useCallback(async () => {
     try {
       setLoading(true);
       const data = await mealPlanService.getWeekMealPlans(weekStart);
@@ -37,7 +33,11 @@ export function MealPlan() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [weekStart, toast]);
+
+  useEffect(() => {
+    loadMeals();
+  }, [loadMeals]);
 
   const handleAddMeal = (date: string, mealType: MealType) => {
     setSelectedDate(date);
@@ -50,9 +50,10 @@ export function MealPlan() {
       const newMeal = await mealPlanService.createMealPlan(mealPlan);
       setMeals((prev) => [...prev, newMeal]);
       toast.success('Meal added successfully');
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to add meal';
       console.error('Failed to create meal plan:', error);
-      toast.error(error.response?.data?.message || 'Failed to add meal');
+      toast.error(errorMessage);
       throw error;
     }
   };

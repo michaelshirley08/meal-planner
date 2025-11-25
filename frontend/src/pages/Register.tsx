@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import './Auth.css';
 
 export function Register() {
@@ -32,8 +32,9 @@ export function Register() {
     try {
       await register({ email, password, confirmPassword, username });
       navigate('/');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to register');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to register';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

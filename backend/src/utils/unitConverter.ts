@@ -1,5 +1,8 @@
-import { Quantity, VolumeUnit, MassUnit, Unit } from './types.js';
-import { multiplyQuantity, normalize } from './fractionMath.js';
+import { Quantity, VolumeUnit, MassUnit, Unit } from './types';
+import { multiplyQuantity, formatQuantity } from './fractionMath';
+
+// Re-export types for convenience
+export type { Unit, VolumeUnit, MassUnit } from './types';
 
 /**
  * Convert volume units to milliliters
@@ -186,7 +189,6 @@ export function formatQuantityWithUnit(
     format?: 'fraction' | 'decimal';
   } = {}
 ): string {
-  const { formatQuantity } = require('./fractionMath.js');
   const qStr = formatQuantity(quantity, options.format);
 
   const unitStr = options.style === 'long'

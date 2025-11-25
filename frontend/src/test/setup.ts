@@ -15,5 +15,5 @@ if (typeof window !== 'undefined') {
     removeItem: vi.fn(),
     clear: vi.fn(),
   };
-  window.localStorage = localStorageMock as any;
+  window.localStorage = localStorageMock as unknown as Storage;
 }

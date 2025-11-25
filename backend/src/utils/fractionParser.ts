@@ -1,4 +1,4 @@
-import { Quantity } from './types.js';
+import { Quantity } from './types';
 
 /**
  * Parse a string representation of a quantity into a Quantity object

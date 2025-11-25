@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { authMiddleware } from '../middleware/authMiddleware.js';
-import * as ingredientService from '../services/ingredientService.js';
+import { authMiddleware } from '../middleware/authMiddleware';
+import * as ingredientService from '../services/ingredientService';
 
 const router = Router();
 

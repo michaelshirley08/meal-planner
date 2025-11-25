@@ -1,4 +1,4 @@
-import { Quantity } from './types.js';
+import { Quantity } from './types';
 
 /**
  * Get greatest common divisor

@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { recipeService } from '../services/recipeService';
 import { formatQuantity } from '../utils/fractionUtils';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { ErrorMessage } from '../components/common/ErrorMessage';
-import { useToast } from '../contexts/ToastContext';
+import { useToast } from '../hooks/useToast';
 import type { Recipe, RecipeRating } from '../types';
 import './RecipeDetail.css';
 
@@ -20,13 +20,7 @@ export function RecipeDetail() {
   const [newRating, setNewRating] = useState(5);
   const [newNotes, setNewNotes] = useState('');
 
-  useEffect(() => {
-    if (id) {
-      loadRecipe(parseInt(id));
-    }
-  }, [id]);
-
-  const loadRecipe = async (recipeId: number) => {
+  const loadRecipe = useCallback(async (recipeId: number) => {
     try {
       setLoading(true);
       setError(null);
@@ -44,7 +38,13 @@ export function RecipeDetail() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    if (id) {
+      loadRecipe(parseInt(id));
+    }
+  }, [id, loadRecipe]);
 
   const handleDelete = async () => {
     if (!recipe || !window.confirm('Are you sure you want to delete this recipe?')) return;
