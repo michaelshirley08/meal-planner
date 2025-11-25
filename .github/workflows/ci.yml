@@ -46,9 +46,8 @@ jobs:
       - name: Check test coverage
         run: npm run test:coverage
 
-      # TODO: Re-enable after fixing TypeScript strict mode violations
-      # - name: Build backend
-      #   run: npm run build
+      - name: Build backend
+        run: npm run build
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
@@ -86,9 +85,8 @@ jobs:
       - name: Run unit tests
         run: npm run test
 
-      # TODO: Re-enable after fixing TypeScript strict mode violations
-      # - name: Build frontend
-      #   run: npm run build
+      - name: Build frontend
+        run: npm run build
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4

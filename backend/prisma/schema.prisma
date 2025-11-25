@@ -55,6 +55,7 @@ model Ingredient {
   customizations    IngredientCustomization[]
   category          IngredientCategory?       @relation(fields: [categoryId], references: [id])
   recipeIngredients RecipeIngredient[]
+  shoppingListItems ShoppingListItem[]
 
   @@index([name])
   @@index([categoryId])
@@ -161,12 +162,13 @@ model MealPlan {
 }
 
 model ShoppingListItem {
-  id           Int      @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   userId       Int
   ingredientId Int
-  checked      Boolean  @default(false)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  checked      Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
 
   @@unique([userId, ingredientId])
   @@map("shopping_list_items")
